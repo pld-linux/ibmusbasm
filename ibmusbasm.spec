@@ -7,6 +7,7 @@ Group:		Applications
 Source0:	ftp://ftp.software.ibm.com/systems/support/system_x/ibm_svc_rsa2_hlp237a_linux_32-64.tgz
 # Source0-md5:	cf9ff9cdfb702b7c0268fd0bcd29274c
 URL:		http://www.ibm.com
+BuildRequires:	libusb-devel
 BuildRequires:	rpmbuild(macros) >= 1.228
 Requires(post,preun):	/sbin/chkconfig
 Requires:	libusb
@@ -24,12 +25,14 @@ IBM Remote Supervisor Adapter (RSA) II Daemon package.
 %setup -qc
 %ifarch %{ix86}
 rpm2cpio SRPMS/ibmusbasm-%{version}-2.src.rpm | cpio -i -d
+%{__tar} zxf ibmusbasm-src.tgz
 %endif
 %ifarch %{x8664}
 rpm2cpio SRPMS/ibmusbasm64-%{version}-2.src.rpm | cpio -i -d
+%{__tar} zxf ibmusbasm64-src.tgz
+mv ibmusbasm{64,}-src
 %endif
-%{__tar} zxf ibmusbasm-src.tgz
-chmod -R a+rX ibmusbasm-src
+%{__chmod} -R a+rX ibmusbasm-src
 
 %build
 cd ibmusbasm-src/shlib
