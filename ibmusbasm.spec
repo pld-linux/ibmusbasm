@@ -1,4 +1,5 @@
 Summary:	IBM Remote Supervisor Adapter (RSA) II daemon
+Summary(pl.UTF-8):	Demon IBM Remote Supervisor Adapter (RSA) II
 Name:		ibmusbasm
 Version:	1.37
 Release:	0.1
@@ -6,11 +7,16 @@ License:	GPL
 Group:		Applications
 Source0:	ftp://ftp.software.ibm.com/systems/support/system_x/ibm_svc_rsa2_hlp237a_linux_32-64.tgz
 # Source0-md5:	cf9ff9cdfb702b7c0268fd0bcd29274c
-URL:		http://www.ibm.com
+URL:		http://www-304.ibm.com/jct01004c/systems/support/supportsite.wss/docdisplay?lndocid=MIGR-5071676&brandind=5000008
 BuildRequires:	libusb-devel
 BuildRequires:	rpmbuild(macros) >= 1.228
+BuildRequires:	sed >= 4.0
 Requires(post,preun):	/sbin/chkconfig
-Requires:	libusb
+%ifarch %{x8664}
+Requires:	libusb-0.1.so.4()(64bit)
+%else
+Requires:	libusb-0.1.so.4
+%endif
 Conflicts:	ibmasm
 Conflicts:	ibmasr
 ExclusiveArch:	%{ix86} %{x8664}
@@ -20,6 +26,9 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 IBM Remote Supervisor Adapter (RSA) II Daemon package.
+
+%description -l pl.UTF-8
+Demon IBM Remote Supervisor Adapter (RSA) II.
 
 %prep
 %setup -qc
@@ -33,6 +42,7 @@ rpm2cpio SRPMS/ibmusbasm64-%{version}-2.src.rpm | cpio -i -d
 mv ibmusbasm{64,}-src
 %endif
 %{__chmod} -R a+rX ibmusbasm-src
+sed -i -e 's/"libusb.so"/"libusb-0.1.so.4"/' ibmusbasm-src/src/ibmasm.c
 
 %build
 cd ibmusbasm-src/shlib
