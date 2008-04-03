@@ -1,3 +1,5 @@
+# TODO
+# - pldize initscript
 Summary:	IBM Remote Supervisor Adapter (RSA) II daemon
 Summary(pl.UTF-8):	Demon IBM Remote Supervisor Adapter (RSA) II
 Name:		ibmusbasm
@@ -11,7 +13,9 @@ URL:		http://www-304.ibm.com/jct01004c/systems/support/supportsite.wss/docdispla
 BuildRequires:	libusb-devel
 BuildRequires:	rpmbuild(macros) >= 1.228
 BuildRequires:	sed >= 4.0
+Requires(post):	/sbin/ldconfig
 Requires(post,preun):	/sbin/chkconfig
+Requires:	rc-scripts
 %ifarch %{x8664}
 Requires:	libusb-0.1.so.4()(64bit)
 %else
@@ -62,7 +66,16 @@ ln -s libsysSp.so.1 $RPM_BUILD_ROOT%{_libdir}/libsysSp.so
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post	-p /sbin/ldconfig
+%post
+/sbin/ldconfig
+/sbin/chkconfig --add ibmasm
+%service ibmasm restart
+
+if [ "$1" = "0" ]; then
+	%service -q ibmasm stop
+	/sbin/chkconfig --del ibmasm
+fi
+
 %postun	-p /sbin/ldconfig
 
 %files
