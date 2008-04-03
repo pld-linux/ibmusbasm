@@ -1,12 +1,12 @@
 Summary:	IBM Remote Supervisor Adapter (RSA) II daemon
 Summary(pl.UTF-8):	Demon IBM Remote Supervisor Adapter (RSA) II
 Name:		ibmusbasm
-Version:	1.37
-Release:	0.1
+Version:	1.42
+Release:	1
 License:	GPL
 Group:		Applications
-Source0:	ftp://ftp.software.ibm.com/systems/support/system_x/ibm_svc_rsa2_hlp237a_linux_32-64.tgz
-# Source0-md5:	cf9ff9cdfb702b7c0268fd0bcd29274c
+Source0:	ftp://ftp.software.ibm.com/systems/support/system_x/ibm_svc_rsa2_hlp242b_linux_32-64.tgz
+# Source0-md5:	8b08d5cf722c812e607f99ce852f62f7
 URL:		http://www-304.ibm.com/jct01004c/systems/support/supportsite.wss/docdisplay?lndocid=MIGR-5071676&brandind=5000008
 BuildRequires:	libusb-devel
 BuildRequires:	rpmbuild(macros) >= 1.228
@@ -48,7 +48,7 @@ sed -i -e 's/"libusb.so"/"libusb-0.1.so.4"/' ibmusbasm-src/src/ibmasm.c
 cd ibmusbasm-src/shlib
 %{__cc} %{rpmcflags} -D__IBMLINUX__ -fPIC -shared -I ../src -o libsysSp.so.1 uwiapi.c
 cd ../src
-%{__cc} %{rpmcflags} -I . -o ibmasm ./ibmasm.c -ldl
+%{__cc} %{rpmcflags} -I . -o ibmasm ibmasm.c -ldl
 
 %install
 rm -rf $RPM_BUILD_ROOT
