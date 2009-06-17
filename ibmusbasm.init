@@ -8,6 +8,7 @@
 #              software to interact with the Remote Supervisor Adapter II.\
 #
 # processname:	ibmasm
+# pidfile: /var/run/ibmusbasm.pid
 #
 # $Id$
 
@@ -39,7 +40,7 @@ stop() {
 
 	# Stop daemons.
 	msg_stopping "IBM Remote Supervisor Adapter"
-	killproc ibmasm
+	killproc --pidfile /var/run/ibmusbasm.pid ibmasm -TERM
 	rm -f /var/lock/subsys/ibmasm
 }
 
