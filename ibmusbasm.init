@@ -1,0 +1,121 @@
+#!/bin/bash
+#
+# ibmasm        This shell script takes care of starting and stopping \
+#               the x64 IBM Remote Supervisor Adapter II daemon.
+#
+# chkconfig: 2345 85 15
+# description: The IBM Remote Supervisor Adapter II interface daemon allows\
+#              software to interact with the Remote Supervisor Adapter II.\
+#
+### BEGIN INIT INFO
+# Provides:       ibmusbasm
+# Required-Start: $local_fs $syslog
+# Required-Stop:  $local_fs
+# Should-Start:
+# Should-Stop:
+# Default-Start:  2 3 4 5
+# Default-Stop:   0 1 6
+# Description:    IBM Remote Supervisor Adapter
+### END INIT INFO
+
+RETVAL=0
+
+start () {
+	echo "  Starting IBM RSA II daemon "
+
+	local pid=
+	# is it already running?
+	if [ -f /var/run/ibmusbasm.pid ]; then
+		local line p
+		read line < /var/run/ibmusbasm.pid
+		for p in $line ; do
+			[ -z "${p//[0-9]/}" -a -d "/proc/$p" ] && pid="$pid$p"
+		done
+	fi
+
+	#  if it's already running, return success
+	[ -n "${pid:-}" ] && return 0
+	
+	# start the daemon in the background
+	/sbin/ibmasm > /dev/null 2>&1 &
+	
+	# wait for process to start
+	usleep 100000
+	# is it running?
+	if [ -f /var/run/ibmusbasm.pid ]; then
+		local line p
+		read line < /var/run/ibmusbasm.pid
+		for p in $line ; do
+			[ -z "${p//[0-9]/}" -a -d "/proc/$p" ] && pid="$pid$p"
+		done
+	fi
+	#  if not running, wait longer
+	if [ -z "${pid:-}" ]; then
+		sleep 1
+		# is it running?
+		if [ -f /var/run/ibmusbasm.pid ]; then
+			local line p
+			read line < /var/run/ibmusbasm.pid
+			for p in $line ; do
+				[ -z "${p//[0-9]/}" -a -d "/proc/$p" ] && pid="$pid$p"
+			done
+		fi
+		#  if still not running, return failure
+		[ -z "${pid:-}" ] && return 3
+	fi
+	# double check that it's running
+	touch /var/lock/subsys/ibmasm
+	RETVAL=$?
+	return $RETVAL
+}
+
+stop () {
+	echo "  Stopping IBM RSA II daemon "
+
+	# Find pid.
+	local pid=""
+	if [ -f /var/run/ibmusbasm.pid ]; then
+		local line p
+		read line < /var/run/ibmusbasm.pid
+		for p in $line ; do
+			[ -z "${p//[0-9]/}" -a -d "/proc/$p" ] && pid="$pid$p"
+		done
+	fi
+	if [ -z "$pid" ]; then
+		pid=`pidof -o $$ -o $PPID -o %PPID -x $1 || \
+		pidof -o $$ -o $PPID -o %PPID -x ibmusbasm`
+	fi
+
+	# Kill it.
+	if [ -n "${pid:-}" ]; then
+		if [ -d "/proc/$pid" ]; then
+			# TERM first, then KILL if not dead
+			kill -SIGTERM $pid >/dev/null 2>&1
+			usleep 100000
+			if [ -d "/proc/$pid" ] ; then
+				sleep 3
+				if [ -d "/proc/$pid" ] ; then
+					RETVAL=1
+				fi
+			fi
+		fi
+	else
+		RETVAL=1
+	fi
+	return $RETVAL
+}
+
+# See how we were called.
+case "$1" in
+    start)
+	start
+	;;
+    stop)
+	stop
+	;;
+    *)
+        echo "Usage: ibmasm {start|stop}"
+        RETVAL=0
+esac
+
+exit $RETVAL
