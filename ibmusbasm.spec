@@ -9,7 +9,7 @@ Source0:	ftp://ftp.software.ibm.com/systems/support/system_x/ibm_svc_rsa2_hlp242
 # Source0-md5:	8b08d5cf722c812e607f99ce852f62f7
 Source1:	ibmasm.init
 URL:		http://www-304.ibm.com/jct01004c/systems/support/supportsite.wss/docdisplay?lndocid=MIGR-5071676&brandind=5000008
-BuildRequires:	libusb-devel
+BuildRequires:	libusb-devel >= 0.1.6
 BuildRequires:	rpmbuild(macros) >= 1.228
 BuildRequires:	sed >= 4.0
 Requires(post):	/sbin/ldconfig
