@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# ibmasm        This shell script takes care of starting and stopping \
+# ibmusbasm        This shell script takes care of starting and stopping \
 #               the IBM Remote Supervisor Adapter II daemon.
 #
 # chkconfig: 2345 85 15
@@ -16,36 +16,36 @@
 . /etc/rc.d/init.d/functions
 
 # Get service config - may override defaults
-[ -f /etc/sysconfig/ibmasm ] && . /etc/sysconfig/ibmasm
+[ -f /etc/sysconfig/ibmusbasm ] && . /etc/sysconfig/ibmusbasm
 
 start() {
 	# Check if the service is already running?
-	if [ -f /var/lock/subsys/ibmasm ]; then
+	if [ -f /var/lock/subsys/ibmusbasm ]; then
 		msg_already_running "IBM Remote Supervisor Adapter"
 		return
 	fi
 
 	msg_starting "IBM Remote Supervisor Adapter"
 	# start the daemon in the background
-	daemon --fork /sbin/ibmasm
+	daemon --fork /sbin/ibmusbasm
 	RETVAL=$?
-	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/ibmasm
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/ibmusbasm
 }
 
 stop() {
-	if [ ! -f /var/lock/subsys/ibmasm ]; then
+	if [ ! -f /var/lock/subsys/ibmusbasm ]; then
 		msg_not_running "IBM Remote Supervisor Adapter"
 		return
 	fi
 
 	# Stop daemons.
 	msg_stopping "IBM Remote Supervisor Adapter"
-	killproc --pidfile /var/run/ibmusbasm.pid ibmasm -TERM
-	rm -f /var/lock/subsys/ibmasm
+	killproc --pidfile /var/run/ibmusbasm.pid ibmusbasm -TERM
+	rm -f /var/lock/subsys/ibmusbasm
 }
 
 condrestart() {
-	if [ ! -f /var/lock/subsys/ibmasm ]; then
+	if [ ! -f /var/lock/subsys/ibmusbasm ]; then
 		msg_not_running "IBM Remote Supervisor Adapter"
 		RETVAL=$1
 		return
@@ -75,7 +75,7 @@ case "$1" in
 	condrestart 7
 	;;
   status)
-	status ibmasm
+	status ibmusbasm
 	RETVAL=$?
 	;;
   *)

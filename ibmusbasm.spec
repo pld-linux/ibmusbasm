@@ -1,14 +1,16 @@
+# NOTE
+# - the shared library built here isn't used by the daemon, drop as not worth of it?
 Summary:	IBM Remote Supervisor Adapter (RSA) II daemon
 Summary(pl.UTF-8):	Demon IBM Remote Supervisor Adapter (RSA) II
 Name:		ibmusbasm
-Version:	1.42
-Release:	2
+Version:	1.46
+Release:	0.1
 License:	GPL
 Group:		Applications
-Source0:	ftp://ftp.software.ibm.com/systems/support/system_x/ibm_svc_rsa2_hlp242b_linux_32-64.tgz
-# Source0-md5:	8b08d5cf722c812e607f99ce852f62f7
-Source1:	ibmasm.init
-URL:		http://www-304.ibm.com/jct01004c/systems/support/supportsite.wss/docdisplay?lndocid=MIGR-5071676&brandind=5000008
+Source0:	ftp://ftp.software.ibm.com/systems/support/system_x/ibm_svc_rsa2_hlp246a_linux_32-64.tgz
+# Source0-md5:	68ca47671c98a9a174eaf8b31d658272
+Source1:	ibmusbasm.init
+URL:		http://www-947.ibm.com/systems/support/supportsite.wss/docdisplay?lndocid=MIGR-5071676&brandind=5000008
 BuildRequires:	libusb-devel >= 0.1.6
 BuildRequires:	rpmbuild(macros) >= 1.228
 BuildRequires:	sed >= 4.0
@@ -58,7 +60,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_libdir},%{_sbindir},%{_sysconfdir},/etc/rc.d/init.d}
 install ibmusbasm-src/shlib/libsysSp.so.1 $RPM_BUILD_ROOT%{_libdir}
 install ibmusbasm-src/src/ibmasm $RPM_BUILD_ROOT%{_sbindir}
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ibmasm
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ibmusbasm
 ln -s libsysSp.so.1 $RPM_BUILD_ROOT%{_libdir}/libsysSp.so
 
 %clean
@@ -66,12 +68,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/ldconfig
-/sbin/chkconfig --add ibmasm
-%service ibmasm restart
+/sbin/chkconfig --add ibmusbasm
+%service ibmusbasm restart
 
 if [ "$1" = "0" ]; then
-	%service -q ibmasm stop
-	/sbin/chkconfig --del ibmasm
+	%service -q ibmusbasm stop
+	/sbin/chkconfig --del ibmusbasm
 fi
 
 %postun	-p /sbin/ldconfig
@@ -79,7 +81,7 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc readme.txt
-%attr(754,root,root) /etc/rc.d/init.d/ibmasm
+%attr(754,root,root) /etc/rc.d/init.d/ibmusbasm
 %attr(755,root,root) %{_libdir}/libsysSp.so
 %attr(755,root,root) %{_libdir}/libsysSp.so.1
 %attr(755,root,root) %{_sbindir}/ibmasm
