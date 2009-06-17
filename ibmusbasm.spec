@@ -58,7 +58,6 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_libdir},%{_sbindir},%{_sysconfdir},/etc/rc.d/init.d}
 install ibmusbasm-src/shlib/libsysSp.so.1 $RPM_BUILD_ROOT%{_libdir}
 install ibmusbasm-src/src/ibmasm $RPM_BUILD_ROOT%{_sbindir}
-install ibmusbasm-src/ibmspup ibmusbasm-src/ibmspdown $RPM_BUILD_ROOT%{_sbindir}
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ibmasm
 ln -s libsysSp.so.1 $RPM_BUILD_ROOT%{_libdir}/libsysSp.so
 
@@ -84,5 +83,3 @@ fi
 %attr(755,root,root) %{_libdir}/libsysSp.so
 %attr(755,root,root) %{_libdir}/libsysSp.so.1
 %attr(755,root,root) %{_sbindir}/ibmasm
-%attr(755,root,root) %{_sbindir}/ibmspdown
-%attr(755,root,root) %{_sbindir}/ibmspup
