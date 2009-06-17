@@ -1,14 +1,13 @@
-# TODO
-# - pldize initscript
 Summary:	IBM Remote Supervisor Adapter (RSA) II daemon
 Summary(pl.UTF-8):	Demon IBM Remote Supervisor Adapter (RSA) II
 Name:		ibmusbasm
 Version:	1.42
-Release:	1
+Release:	2
 License:	GPL
 Group:		Applications
 Source0:	ftp://ftp.software.ibm.com/systems/support/system_x/ibm_svc_rsa2_hlp242b_linux_32-64.tgz
 # Source0-md5:	8b08d5cf722c812e607f99ce852f62f7
+Source1:	ibmasm.init
 URL:		http://www-304.ibm.com/jct01004c/systems/support/supportsite.wss/docdisplay?lndocid=MIGR-5071676&brandind=5000008
 BuildRequires:	libusb-devel
 BuildRequires:	rpmbuild(macros) >= 1.228
@@ -50,7 +49,7 @@ sed -i -e 's/"libusb.so"/"libusb-0.1.so.4"/' ibmusbasm-src/src/ibmasm.c
 
 %build
 cd ibmusbasm-src/shlib
-%{__cc} %{rpmcflags} -D__IBMLINUX__ -fPIC -shared -I ../src -o libsysSp.so.1 uwiapi.c
+%{__cc} %{rpmcflags} -D__IBMLINUX__ -fPIC -shared -I ../src -Wl,-soname -Wl,libsysSp.so.1 -o libsysSp.so.1 uwiapi.c
 cd ../src
 %{__cc} %{rpmcflags} -I . -o ibmasm ibmasm.c -ldl
 
@@ -60,7 +59,7 @@ install -d $RPM_BUILD_ROOT{%{_libdir},%{_sbindir},%{_sysconfdir},/etc/rc.d/init.
 install ibmusbasm-src/shlib/libsysSp.so.1 $RPM_BUILD_ROOT%{_libdir}
 install ibmusbasm-src/src/ibmasm $RPM_BUILD_ROOT%{_sbindir}
 install ibmusbasm-src/ibmspup ibmusbasm-src/ibmspdown $RPM_BUILD_ROOT%{_sbindir}
-install ibmasm.initscript $RPM_BUILD_ROOT/etc/rc.d/init.d/ibmasm
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ibmasm
 ln -s libsysSp.so.1 $RPM_BUILD_ROOT%{_libdir}/libsysSp.so
 
 %clean
@@ -82,6 +81,7 @@ fi
 %defattr(644,root,root,755)
 %doc readme.txt
 %attr(754,root,root) /etc/rc.d/init.d/ibmasm
+%attr(755,root,root) %{_libdir}/libsysSp.so
 %attr(755,root,root) %{_libdir}/libsysSp.so.1
 %attr(755,root,root) %{_sbindir}/ibmasm
 %attr(755,root,root) %{_sbindir}/ibmspdown
