@@ -60,7 +60,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_libdir},%{_sbindir},%{_sysconfdir},/etc/rc.d/init.d}
 install ibmusbasm-src/shlib/libsysSp.so.1 $RPM_BUILD_ROOT%{_libdir}
 install ibmusbasm-src/src/ibmasm $RPM_BUILD_ROOT%{_sbindir}
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ibmusbasm
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ibmasm
 ln -s libsysSp.so.1 $RPM_BUILD_ROOT%{_libdir}/libsysSp.so
 
 %clean
@@ -68,12 +68,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/ldconfig
-/sbin/chkconfig --add ibmusbasm
-%service ibmusbasm restart
+/sbin/chkconfig --add ibmasm
+%service ibmasm restart
 
 if [ "$1" = "0" ]; then
-	%service -q ibmusbasm stop
-	/sbin/chkconfig --del ibmusbasm
+	%service -q ibmasm stop
+	/sbin/chkconfig --del ibmasm
 fi
 
 %postun	-p /sbin/ldconfig
@@ -81,7 +81,7 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc readme.txt
-%attr(754,root,root) /etc/rc.d/init.d/ibmusbasm
+%attr(754,root,root) /etc/rc.d/init.d/ibmasm
 %attr(755,root,root) %{_libdir}/libsysSp.so
 %attr(755,root,root) %{_libdir}/libsysSp.so.1
 %attr(755,root,root) %{_sbindir}/ibmasm
