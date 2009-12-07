@@ -9,9 +9,13 @@ License:	GPL
 Group:		Applications
 Source0:	ftp://ftp.software.ibm.com/systems/support/system_x/ibm_svc_rsa2_hlp246a_linux_32-64.tgz
 # Source0-md5:	68ca47671c98a9a174eaf8b31d658272
-Source1:	ibmusbasm.init
+Source1:	%{name}.init
 URL:		http://www-947.ibm.com/systems/support/supportsite.wss/docdisplay?lndocid=MIGR-5071676&brandind=5000008
+%if "%{pld_release}" == "ac"
 BuildRequires:	libusb-devel >= 0.1.6
+%else
+BuildRequires:	libusb-compat-devel
+%endif
 BuildRequires:	rpmbuild(macros) >= 1.228
 BuildRequires:	sed >= 4.0
 Requires(post):	/sbin/ldconfig
@@ -51,9 +55,13 @@ sed -i -e 's/"libusb.so"/"libusb-0.1.so.4"/' ibmusbasm-src/src/ibmasm.c
 
 %build
 cd ibmusbasm-src/shlib
-%{__cc} %{rpmcflags} -D__IBMLINUX__ -fPIC -shared -I ../src -Wl,-soname -Wl,libsysSp.so.1 -o libsysSp.so.1 uwiapi.c
+%{__cc} %{rpmcflags} %{rpmldflags} \
+	-D__IBMLINUX__ -I ../src \
+	-fPIC -shared -Wl,-soname -Wl,libsysSp.so.1 \
+	-o libsysSp.so.1 uwiapi.c
 cd ../src
-%{__cc} %{rpmcflags} -I . -o ibmasm ibmasm.c -ldl
+%{__cc} %{rpmcflags} %{rpmldflags} \
+	-I . -o ibmasm ibmasm.c -ldl
 
 %install
 rm -rf $RPM_BUILD_ROOT
