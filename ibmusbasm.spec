@@ -4,7 +4,7 @@ Summary:	IBM Remote Supervisor Adapter (RSA) II daemon
 Summary(pl.UTF-8):	Demon IBM Remote Supervisor Adapter (RSA) II
 Name:		ibmusbasm
 Version:	1.46
-Release:	0.1
+Release:	1
 License:	GPL
 Group:		Applications
 Source0:	ftp://ftp.software.ibm.com/systems/support/system_x/ibm_svc_rsa2_hlp246a_linux_32-64.tgz
